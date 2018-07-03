@@ -1,4 +1,4 @@
-from ParsingXML import Parsing
+import Parsing
 
 Parsing.get_file()
 Parsing.parse()
