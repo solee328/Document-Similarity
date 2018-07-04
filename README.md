@@ -3,12 +3,12 @@ Document-Similarity
 
 문서 유사도 판단 시스템
 
-__FileToXML__
+__FileToXML__<p>
 Word(.doc/ .docx)와 한글(.hwp)파일이 입력으로 주어지며 이를 OOXML(.doc/ .docx)과 HML(.hwp)파일로 만드는 과정이다.
 
 
 
-__GetTags__
+__GetTags__<p>
 FileToXML을 통해 변경된 OOXML과 HML에서 태그 값을 가져오는 과정이다.
 현재 인식 가능하게 처리한 태그는 아래와 같다.
 1. TABLE/ tbl
