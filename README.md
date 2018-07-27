@@ -3,12 +3,12 @@ Document-Similarity
 
 문서 유사도 판단 시스템
 
-__FileToXML__  
+__FileToXML__  <br>
 Word(.doc/ .docx)와 한글(.hwp)파일이 입력으로 주어지며 이를 OOXML(.doc/ .docx)과 HML(.hwp)파일로 만드는 과정이다.
 <br><br>
 
 
-__GetTags__  
+__GetTags__  <br>
 FileToXML을 통해 변경된 OOXML과 HML에서 태그 값을 가져오는 과정이다.
 현재 인식 가능하게 처리한 태그는 아래와 같다.
 1. TABLE/ tbl
@@ -23,12 +23,25 @@ CHAR 태그의 경우 P 태그 안에 포함되는 태그로 P 태그가 문장 
 <br><br>
 
 
-__AnalyMorph__
+__AnalyMorph__ <br>
 일반 텍스트와 테이블을  분리하여 형태소 분석과정을 진행한다.
 
 현재는 일반 텍스트만 진행된 상태이다.
 GetTags를 통해 배치파일과 저장된 일반 텍스트 문서위치 값을 인자로 주어 CMD 창을 통해 리눅스에서 meCab()을 실행한 결과 값을 다시 일반 텍스트 파일로 저장한다.
-<<<<<<< HEAD
-=======
 저장된 일반 텍스트 파일을 열어 Tagging된 형태소를 제거한 후 space를 단위로 단어를 나누어 한줄로 만든 string을 return한다.
->>>>>>> parent of 57933ed... File to EmbedWord (Exception Word2Vec)
+<br><br>
+
+
+__EmbedWord__ <br>
+Word2Vec(Gensim)과 FastText(Gensim)를 사용한다.
+모델을 만드는데 사용하는 parameter는 다음과 같다.
+1. sg = 1 (skipgram)
+2. hs = 0 (negative sampling)
+3. negative = 5
+4. alpha = 0.1
+5. iter = 10
+6. min_count = 1
+7. size = 100
+8. window = 5
+9. workers = 3
+10. word_ngrams = 1 (ONLY FastText)
