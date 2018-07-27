@@ -28,3 +28,7 @@ __AnalyMorph__
 
 현재는 일반 텍스트만 진행된 상태이다.
 GetTags를 통해 배치파일과 저장된 일반 텍스트 문서위치 값을 인자로 주어 CMD 창을 통해 리눅스에서 meCab()을 실행한 결과 값을 다시 일반 텍스트 파일로 저장한다.
+<<<<<<< HEAD
+=======
+저장된 일반 텍스트 파일을 열어 Tagging된 형태소를 제거한 후 space를 단위로 단어를 나누어 한줄로 만든 string을 return한다.
+>>>>>>> parent of 57933ed... File to EmbedWord (Exception Word2Vec)
