@@ -1,31 +1,51 @@
+# -*- coding:utf-8 -*-
 import os
 import spacy
+import os.path
+from os.path import splitext
 
 # 한국어 품사 list
-Noun = ['NNG', 'NNP', 'NNB', 'NNBC', 'NR', 'NP']
-Verb = ['VV']
-Adj = ['VA']
-Adv = ['MAG', 'MAJ']
-Dtm = ['MM']
 F = ['SL']  # 한자 SH
-Num = ['SN']
-ETC = ['SY', 'SC']
+partInclude = ['N', 'V', 'M']
+posLetter = ['SN', 'SY', 'SC', 'XR']
 
 # 영어 명사 list
-E_Noun = ['PROPN', 'NOUN', 'NUM', 'PRON']
+E_Noun = ['PROPN', 'NOUN', 'NUM', 'PRON', 'VERB', 'ADJ', 'X']
+E_Lemma = ['VERB', 'ADV']
 
 nlp = spacy.load('en_core_web_sm')
 
 
-# 특정 품사만 가져와 만든다.
-def make_pos():
+# 특정 품사만 가져와  단어 파일을 만든다.
+def make_pos(file_path):
+
     os.system("C:/Exception/Linux/test.bat /mnt/c/Exception/Linux/txt.txt")
     dir = 'C:/Exception/Linux/'
     data = read_data(dir + 'mecabtest.txt')
     word_list = split_morph(data)
     analysis_word = token_analysis(word_list)
+    write_data(file_path, analysis_word)
 
-    print(analysis_word)
+
+# fn_ext[0] : directory except file_name
+# fn_ext[1] : file_name include extension
+# fn_ext[2] : extension
+def write_data(file_path, word_data):
+    fn_ext = os.path.split(file_path)
+
+    if os.path.isfile(fn_ext[0]+'\words.txt'):
+        file_name = open(fn_ext[0]+'\words.txt', 'a', encoding='utf-8')
+    else:
+        file_name = open(fn_ext[0]+'\words.txt', 'w', encoding='utf-8')
+
+    file_name.write(word_data)
+    file_name.close()
+
+    file_text = open(splitext(file_path)[0] +'.txt', 'w', encoding='utf-8')
+    file_text.write(word_data)
+    file_text.close()
+
+    print(word_data)
 
 
 def read_data(filename):
@@ -42,43 +62,53 @@ def split_morph(data):
     return words
 
 
+def token_analysis_english(word_string):
+    tokens = ''
+    en_word = nlp(word_string)
+    for t in en_word:
+        if t.pos_ in E_Noun or t.dep_ == 'neg':
+            if t.pos_ in E_Lemma:
+                tokens += ' ' + t.lemma_
+            else:
+                tokens += ' ' + t.lower_
+    return tokens
+
+
 def token_analysis(words):
     tokens = ''
+    en_string = ""
+    en_flag = 0
+    n_flag = 0
 
     for word, part in words:
-        # 동사
-        if part in Verb:
-            tokens += word + ' '
 
-        # 명사
-        elif part in Noun:
-            tokens += word + ' '
+        if word == '´':
+            n_flag = 1
+            en_string += "'"
+            continue
 
-        # 형용사
-        elif part in Adj:
-            tokens += word + ' '
+        # 한국어
+        if part[0] in partInclude or part in posLetter:
+            if word == ".":
+                continue
 
-        # 부사
-        elif part in Adv:
-            tokens += word + ' '
+            if en_flag == 1:
+                tokens += token_analysis_english(en_string)
 
-        # 관형사
-        elif part in Dtm:
-            tokens += word + ''
+            en_string = ""
+            tokens += ' ' + word
+            en_flag = 0
 
         # 영어
         elif part in F:
-            t_word = nlp(word)
-            for t in t_word:
-                if t.pos_ in E_Noun or t.pos_ == 'VERB' or t.pos_ == 'ADJ' or t.pos_ == 'X' or t.dep_ == 'neg':  # 영어 명사, 동사, 형용사, 부정적 의미만
-                    tokens += t.text + " "
+            en_flag = 1
+            if n_flag == 1:
+                en_string += word
+                n_flag = 0
+            else:
+                en_string += ' ' + word
 
-        # 숫자
-        elif part in Num:
-            tokens += word + ' '
-
-        # 특수 기호
-        elif part in ETC:
-            tokens += word + ' '
+    if en_flag == 1:
+        tokens += token_analysis_english(en_string)
 
     return tokens
