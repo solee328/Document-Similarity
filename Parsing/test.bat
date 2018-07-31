@@ -1,0 +1,1 @@
+wsl python3 /mnt/c/Exception/Linux/test.py %1

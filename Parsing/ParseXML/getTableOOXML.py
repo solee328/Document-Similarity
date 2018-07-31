@@ -6,11 +6,13 @@ WORD_NAMESPACE = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}
 PARA = WORD_NAMESPACE + 'p'
 TEXT = WORD_NAMESPACE + 't'
 CELL = WORD_NAMESPACE + 'tc'
+MERGE = WORD_NAMESPACE + 'vMerge'
+GRID = WORD_NAMESPACE + 'gridSpan'
 TBL = WORD_NAMESPACE + 'tbl'
 ROW = WORD_NAMESPACE + 'tr'
 
 # 필요한 태그 값만 가져오기 위함
-TAG = ['TABLE', 'ROW', 'CELL', 'SCRIPT', 'TEXT', 'P', 'SCRIPT']
+TAG = ['TABLE', 'ROW', 'CELL', 'MERGE', 'GRID', 'SCRIPT', 'TEXT', 'P', 'SCRIPT']
 
 
 def apply_indent(elem, level=0):
@@ -48,6 +50,14 @@ def change_tag_to_hwpml(tree_string):
             child.tag = 'CELL'
 
     for parent in tree_string.iter():
+        for child in parent.findall(MERGE):
+            child.tag = 'MERGE'
+
+    for parent in tree_string.iter():
+        for child in parent.findall(GRID):
+            child.tag = 'GRID'
+
+    for parent in tree_string.iter():
         for child in parent.findall(TEXT):
             child.tag = 'TEXT'
 
@@ -76,6 +86,9 @@ def get_tag(parse_result):
 
                     elif elem.tag == 'CELL' or elem.tag == 'ROW':
                         tag += "<{}> ".format(elem.tag)
+
+                    elif elem.tag == 'MERGE' or elem.tag == 'GRID':
+                        tag += "<{}> {} ".format(elem.tag, elem.get(WORD_NAMESPACE+'val'))
 
                     else:
                         tag += "<{}> {}".format(elem.tag, tmp)

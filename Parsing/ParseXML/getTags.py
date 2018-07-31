@@ -11,7 +11,7 @@ def get_extension(self):
     # fn_ext[2] : extension
     fn_direc = os.path.split(self)
     fn_name = os.path.splitext(self)
-    file_path = fn_name[0]+'.xml'
+    file_path = fn_name[0] + '.xml'
 
     if extension == 'doc' or extension == 'docx':
         global result_table
@@ -34,5 +34,4 @@ def get_extension(self):
     file_txt.write(result_text)
     file_txt.close()
 
-    print('<result_table>\n'+result_table+'\n\n')
-    print('<result_text>\n'+result_text+'\n\n')
+    return result_table
